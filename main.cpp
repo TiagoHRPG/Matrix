@@ -1,16 +1,21 @@
-#include <iostream>
+
+#include "bits/stdc++.h"
 #include <stdlib.h>
 #include "functions.h"
 
 using namespace std;
 
+
+
 int main() {
     int option;
-    int size;
-    int **mat1;
-    int **mat2;
-    int **soma;
-    int **multi;
+    int tam_linhas, tam_colunas;
+
+    Matrix mat1(0,0);
+    Matrix mat2(0,0);
+
+    Matrix soma(0,0);
+    Matrix multi(0,0);
     int i, j;
 
 
@@ -27,29 +32,47 @@ int main() {
         cout << "Obrigado por usar minha calculadora de matrizes, volte sempre!!!" << endl;
         break;
       case 1: //soma  
-        size = matrixSize();
-        cout << endl;
+        matrixSize(&mat1);
 
-        mat1 = alocMatrix(size);
-        mat2 = alocMatrix(size);
-        writeMatrix(size, mat1);
-        writeMatrix(size, mat2);
-        cout << endl;
-        soma = sumMatrix(size, mat1, mat2);
+        resizeMatrix(&mat1);
 
-        printMatrix(size, soma);
-        
+        matrixSize(&mat2);
+        resizeMatrix(&mat2);
+
+
+        mat2.valores.resize(mat2.tam_linhas);
+        for(int i = 0; i < mat2.tam_linhas; i++){
+          mat2.valores[i].resize(mat2.tam_colunas);
+        }
+
+        writeMatrix(&mat1);
+
+        writeMatrix(&mat2);
+
+
+
+    
+
+        sumMatrix(mat1, mat2, &soma);
+        printMatrix(soma);
+
+
 
         break;
       case 2: //multiplicaçao
-        size = matrixSize();
-        mat1 = alocMatrix(size);
-        mat2 = alocMatrix(size);
-        writeMatrix(size, mat1);
-        writeMatrix(size, mat2);
-        cout << endl;
-        multi = multMatrix(size, mat1, mat2);
-        printMatrix(size, multi);
+        matrixSize(&mat1);
+        resizeMatrix(&mat1);
+
+        matrixSize(&mat2);
+        resizeMatrix(&mat2);
+
+        writeMatrix(&mat1);
+        writeMatrix(&mat2);
+        
+      
+        multMatrix(mat1, mat2, &multi);
+
+        printMatrix(multi);
         break;
       default:
         cout << "\nDigito inválido, tente novamente." << endl;
@@ -57,9 +80,7 @@ int main() {
     
   } while(option != 0);
 
-  freeMatrix(size, mat1);
-  freeMatrix(size, mat2);
-
+ 
   
 
 }

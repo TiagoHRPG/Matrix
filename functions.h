@@ -3,96 +3,100 @@
 
 using namespace std;
 
-int matrixSize(){
-  int size;
-  std::cout << "Digite a ordem da sua matriz quadrada: ";
-  std::cin >> size;
-  return size;
-}
+struct Matrix{
+  int tam_linhas, tam_colunas;
+  vector<vector<float>> valores;
+  
 
-int **alocMatrix(int size){
-  int i;
-  int **mat;
-
-  mat = (int **) malloc (size*sizeof(int *));
-  if(mat == NULL){
-    std::cout << "erro de alocação" << std::endl;
-    return (NULL);
-    
-  }
-  for(i = 0; i < size; i++){
-    mat[i] = (int *) malloc (size*sizeof(int));
-    if(mat[i] == NULL){
-      cout << "erro de alocação" << endl;
-      return(NULL);
+  Matrix(int tam_linhas=0, int tam_colunas=0){
+    valores.resize(tam_linhas);
+    for (int i; i < tam_linhas; i++){
+      valores[i].resize(tam_colunas);
     }
   }
-  return(mat);
+  
+};
 
+void resizeMatrix(Matrix *m){
+	(*m).valores.resize((*m).tam_linhas);
+	for(int i = 0; i < (*m).tam_linhas; i++){
+		(*m).valores[i].resize((*m).tam_colunas);
+	}		
 }
 
-void freeMatrix(int size, int **mat){
-  int i;
-  for(i=0; i < size; i++){
-    free(mat[i]);
-  }
-  free(mat);
+void matrixSize(Matrix *m){
+  int tam_linhas, tam_colunas;
+  cout << "Digite o número de linhas e colunas da sua matriz: ";
+  cin >> tam_linhas >> tam_colunas;
+
+  (*m).tam_linhas = tam_linhas;
+  (*m).tam_colunas = tam_colunas;
 }
 
-void writeMatrix(int size, int **mat){
+void writeMatrix(Matrix *m){
+
   int i, j;
 
-
   cout << "Digite a matriz: \n";
-  for(i=0; i < size; i++){
-    for(j=0; j < size; j++){
-      cin >> mat[i][j];
+  for(i = 0; i < (*m).tam_linhas; i++){
+    for(j = 0; j < (*m).tam_colunas; j++){
+      cin >> (*m).valores[i][j];
     }
   } 
 
 }
 
-int **sumMatrix(int size, int **mat1, int **mat2){
+void sumMatrix(Matrix mat1, Matrix mat2, Matrix *soma){
+
   int i, j;
-  int **sum;
 
-  sum = alocMatrix(size);
+  if(mat1.tam_linhas != mat2.tam_linhas || mat1.tam_colunas != mat2.tam_colunas){
+    cout << "Não foi possível realizar a operação - Matrizes de tamanhos diferentes";
+    return;
+  }
 
+  (*soma).tam_linhas = mat1.tam_linhas;
+  (*soma).tam_colunas = mat1.tam_colunas;
 
-  for(i=0; i < size; i++){
-    for(j=0; j < size; j++){
-      sum[i][j] = mat1[i][j] + mat2[i][j];
+  resizeMatrix(&(*soma));
+
+  for(i=0; i < (*soma).tam_linhas; i++){
+    for(j=0; j < (*soma).tam_colunas; j++){
+      (*soma).valores[i][j] = mat1.valores[i][j] + mat2.valores[i][j];
     }
   }
 
-  return (sum);
 }
 
-int **multMatrix(int size,int **mat1,int **mat2){
+void multMatrix(Matrix mat1,Matrix mat2, Matrix *multi){
   int i, j, k;
-  int **mult;
-  mult = alocMatrix(size);
-  for(i = 0; i < size; i++){
-    for(j = 0; j < size; j++){
-      mult[i][j] = 0;
-    }
+
+  if(mat1.tam_colunas != mat2.tam_linhas){
+    cout << "Não foi possível realizar a operação - num. de linhas diferente do num. de colunas" << endl;
+    return;
   }
-  for(i = 0; i < size; i++){
-    for(j = 0; j < size; j++){
-      for(k = 0; k < size; k++){
-        mult[i][j] += mat1[i][k]*mat2[k][j]; 
+
+  (*multi).tam_linhas = mat1.tam_linhas;
+  (*multi).tam_colunas = mat2.tam_colunas;
+
+  resizeMatrix(&(*multi));
+
+  for(i = 0; i < (*multi).tam_linhas; i++){
+    for(j = 0; j < (*multi).tam_colunas; j++){
+      for(k = 0; k < mat1.tam_colunas; k++){
+        (*multi).valores[i][j] += mat1.valores[i][k] * mat2.valores[k][j]; 
       }
     }
   }
 
-  return (mult);
+
 }
 
-void printMatrix(int size, int **mat){
+void printMatrix(Matrix m){
   int i, j;
-  for(i=0; i < size; i++){
-    for(j=0; j < size; j++){
-      cout << mat[i][j] << " ";
+  for(i=0; i < m.tam_linhas; i++){
+    for(j=0; j < m.tam_colunas; j++){
+      cout << m.valores[i][j] << " ";
     }
     cout << endl;
   }
